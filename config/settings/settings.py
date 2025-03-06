@@ -10,7 +10,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-AUTH_USER_MODEL = 'user.CustomUser'
+
 
 INSTALLED_APPS = [
     'jazzmin',
@@ -60,8 +60,11 @@ TEMPLATES = [
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    )
+    ),
 }
+
+
+CSRF_COOKIE_SECURE = False
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
@@ -76,6 +79,7 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+AUTH_USER_MODEL = 'user.CustomUser'
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -103,3 +107,7 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+]

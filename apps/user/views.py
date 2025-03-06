@@ -3,6 +3,9 @@ from rest_framework import generics, permissions
 from rest_framework.response import Response
 from .serializers import UserRegistrationSerializer, UserProfileSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 
 class RegisterView(generics.CreateAPIView):
     serializer_class = UserRegistrationSerializer
@@ -17,15 +20,20 @@ class RegisterView(generics.CreateAPIView):
             "message": "User created successfully.",
         })
 
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    username_field = 'email'
+
+@method_decorator(csrf_exempt, name='dispatch')
 class CustomTokenObtainPairView(TokenObtainPairView):
+    serializer_class = CustomTokenObtainPairSerializer
+
     def post(self, request, *args, **kwargs):
         response = super().post(request, *args, **kwargs)
         return Response({
-            "tokens": response.data,
+            "access": response.data.get("access"),
+            "refresh": response.data.get("refresh"),
             "message": "Login successful"
         })
-
-
 
 class UserProfileView(generics.RetrieveAPIView):
     serializer_class = UserProfileSerializer
@@ -34,12 +42,12 @@ class UserProfileView(generics.RetrieveAPIView):
     def get_object(self):
         return self.request.user
 
-
 def register_template(request):
     return render(request, 'user/register.html')
 
-def login_template(request):
-    return render(request, 'login.html')
+def auth_template(request):
+    return render(request, 'auth.html')
 
 def profile_template(request):
     return render(request, 'user/profile.html')
+
