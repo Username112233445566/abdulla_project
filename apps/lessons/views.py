@@ -11,24 +11,28 @@ class CategoryListView(generics.ListAPIView):
 
 class LessonListView(generics.ListAPIView):
     serializer_class = LessonSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         category_id = self.kwargs.get('category_id')
-        return Lesson.objects.filter(category_id=category_id)
+        return Lesson.objects.filter(category_id=category_id, category__user=self.request.user)
 
 class WatchHistoryListView(generics.ListAPIView):
     serializer_class = WatchHistorySerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        return WatchHistory.objects.filter(user=self.request.user)[:10]
+        return WatchHistory.objects.filter(user=self.request.user).order_by('-id')[:10]
 
 class AddToWatchHistoryView(generics.CreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
         lesson = get_object_or_404(Lesson, pk=self.kwargs.get('lesson_id'))
+
+        if lesson.category.user != request.user:
+            return Response({'error': 'Access denied'}, status=403)
+
         WatchHistory.objects.get_or_create(user=request.user, lesson=lesson)
         return Response({'message': 'Added to watch history'})
 
