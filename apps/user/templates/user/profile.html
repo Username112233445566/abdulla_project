@@ -1,0 +1,21 @@
+{% extends "user/base.html" %}
+{% block title %}Профиль{% endblock %}
+{% block content %}
+<div class="row justify-content-center animate__animated animate__fadeIn">
+  <div class="col-md-8">
+    <div class="card shadow-lg">
+      <div class="card-header bg-primary text-white">
+        <h3 class="mb-0">Профиль пользователя</h3>
+      </div>
+      <div class="card-body">
+        <p><strong>Email:</strong> {{ user.email }}</p>
+        <p><strong>Имя:</strong> {{ user.first_name }}</p>
+        <p><strong>Дата регистрации:</strong> {{ user.date_joined }}</p>
+      </div>
+      <div class="card-footer text-end">
+        <a href="/logout/" class="btn btn-danger">Выход</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

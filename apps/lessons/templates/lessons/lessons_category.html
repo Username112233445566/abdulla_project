@@ -1,0 +1,31 @@
+{% extends "user/base.html" %}
+{% load static %}
+{% block title %}Этапы обучения – {{ category.name|title }}{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+  <div class="text-center mb-4">
+    <h1 class="animate__animated animate__fadeInDown">Этапы обучения: {{ category.name|title }}</h1>
+  </div>
+  <div class="row">
+    {% if lessons %}
+      {% for lesson in lessons %}
+        <div class="col-md-4 mb-4">
+          <a href="{% url 'lesson-detail' lesson.id %}" class="card h-100 shadow animate__animated animate__fadeInUp text-decoration-none">
+            <div class="card-body">
+              <h5 class="card-title">{{ lesson.title }}</h5>
+            </div>
+          </a>
+        </div>
+      {% endfor %}
+    {% else %}
+      <div class="col-12">
+        <p class="text-center">Нет доступных этапов для данной категории.</p>
+      </div>
+    {% endif %}
+  </div>
+  <div class="text-center mt-4">
+    <a href="{% url 'category-list' %}" class="btn btn-primary">← Вернуться к выбору категорий</a>
+  </div>
+</div>
+{% endblock %}

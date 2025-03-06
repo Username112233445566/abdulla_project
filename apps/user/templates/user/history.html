@@ -1,0 +1,51 @@
+{% extends "user/base.html" %}
+{% block title %}История просмотров{% endblock %}
+{% block content %}
+<div class="row justify-content-center animate__animated animate__zoomIn">
+  <div class="col-md-10">
+    <div class="card shadow-lg">
+      <div class="card-header bg-success text-white">
+        <h3 class="mb-0">История просмотров</h3>
+      </div>
+      <div class="card-body">
+        <ul class="list-group" id="historyList"></ul>
+      </div>
+      <div class="card-footer text-end">
+        <button id="clearHistory" class="btn btn-warning">Очистить историю</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  async function loadHistory() {
+    const response = await fetch('/api/history/', {
+      headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
+    });
+    const data = await response.json();
+    const list = document.getElementById('historyList');
+    list.innerHTML = '';
+
+    if (data.length === 0) {
+      list.innerHTML = '<p class="text-center">История пуста.</p>';
+    } else {
+      data.forEach(video => {
+        const item = document.createElement('li');
+        item.className = "list-group-item animate__animated animate__fadeInUp";
+        item.innerHTML = `<a href="/lessons/detail/${video.lesson.id}/">${video.lesson.title}</a>`;
+        list.appendChild(item);
+      });
+    }
+  }
+
+  document.getElementById('clearHistory')?.addEventListener('click', async () => {
+    await fetch('/api/history/clear/', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
+    });
+    loadHistory();
+  });
+
+  loadHistory();
+</script>
+{% endblock %}

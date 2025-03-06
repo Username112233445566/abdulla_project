@@ -1,0 +1,54 @@
+{% extends "user/base.html" %}
+{% load static %}
+{% block title %}{{ lesson.title }}{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card shadow-lg animate__animated animate__fadeInUp">
+        <div class="card-header bg-info text-white">
+          <h3 class="mb-0">{{ lesson.title }}</h3>
+        </div>
+        <div class="card-body">
+          <div class="embed-responsive embed-responsive-16by9 mb-3">
+            <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/{{ lesson.youtube_id }}" 
+                    frameborder="0" 
+                    allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" 
+                    allowfullscreen>
+            </iframe>
+          </div>
+         
+        </div>
+        <div class="card-footer d-flex justify-content-between">
+          <a href="{% url 'lesson-list' lesson.category.id %}" class="btn btn-secondary">← Назад</a>
+          <button id="saveHistory" class="btn btn-warning">Добавить в историю</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.getElementById('saveHistory')?.addEventListener('click', async () => {
+  try {
+    const response = await fetch("{% url 'add-to-history' lesson.id %}", {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + localStorage.getItem('token')
+      },
+      body: JSON.stringify({ lesson_id: "{{ lesson.id }}" })
+    });
+    if(response.ok) {
+      alert('Урок добавлен в историю!');
+    } else {
+      alert('Ошибка при добавлении в историю');
+    }
+  } catch (error) {
+    console.error('Ошибка:', error);
+    alert('Ошибка при добавлении в историю');
+  }
+});
+</script>
+{% endblock %}

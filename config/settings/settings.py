@@ -1,5 +1,6 @@
 from datetime import timedelta
 from pathlib import Path
+import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
@@ -40,7 +41,10 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+        os.path.join(BASE_DIR, 'apps/user/templates/user/'),
+        os.path.join(BASE_DIR, 'apps/lessons/templates/lessons/'),
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

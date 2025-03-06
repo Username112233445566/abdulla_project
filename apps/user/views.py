@@ -1,3 +1,4 @@
+from django.shortcuts import render
 from rest_framework import generics, permissions
 from rest_framework.response import Response
 from .serializers import UserRegistrationSerializer, UserProfileSerializer
@@ -17,7 +18,14 @@ class RegisterView(generics.CreateAPIView):
         })
 
 class CustomTokenObtainPairView(TokenObtainPairView):
-    pass
+    def post(self, request, *args, **kwargs):
+        response = super().post(request, *args, **kwargs)
+        return Response({
+            "tokens": response.data,
+            "message": "Login successful"
+        })
+
+
 
 class UserProfileView(generics.RetrieveAPIView):
     serializer_class = UserProfileSerializer
@@ -25,3 +33,13 @@ class UserProfileView(generics.RetrieveAPIView):
 
     def get_object(self):
         return self.request.user
+
+
+def register_template(request):
+    return render(request, 'user/register.html')
+
+def login_template(request):
+    return render(request, 'login.html')
+
+def profile_template(request):
+    return render(request, 'user/profile.html')

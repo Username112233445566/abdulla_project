@@ -1,0 +1,28 @@
+{% extends "user/base.html" %}
+{% load static %}
+{% block title %}Выбор категории обучения{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+  <div class="text-center mb-5">
+    <h1 class="animate__animated animate__fadeInDown">Выберите категорию обучения</h1>
+  </div>
+  <div class="row">
+    {% if categories %}
+      {% for category in categories %}
+        <div class="col-md-4 mb-4">
+          <a href="{% url 'lesson-list' category.id %}" class="card shadow animate__animated animate__zoomIn text-decoration-none">
+            <div class="card-body text-center">
+              <h4 class="card-title">{{ category.name|title }}</h4>
+            </div>
+          </a>
+        </div>
+      {% endfor %}
+    {% else %}
+      <div class="col-12">
+        <p class="text-center">Нет доступных категорий обучения.</p>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
